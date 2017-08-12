@@ -7,5 +7,5 @@ Preview: https://youtu.be/cBKBV_m1NdQ
 ## Camera Constraints
 
 - Limit Area
-- Smooth Position
-- Smooth Zoom
+- Smooth Position (Interpolation)
+- Smooth Zoom (Interpolation)
