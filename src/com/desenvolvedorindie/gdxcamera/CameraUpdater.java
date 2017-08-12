@@ -13,9 +13,9 @@ public class CameraUpdater {
         setCameraPositionStrategy(strategy);
     }
 
-    public void update(Camera camera) {
+    public void update(Camera camera, float delta) {
         if (strategy != null) {
-            strategy.update(camera);
+            strategy.update(camera, delta);
         }
     }
 

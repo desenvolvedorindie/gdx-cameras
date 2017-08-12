@@ -4,6 +4,6 @@ import com.badlogic.gdx.graphics.Camera;
 
 public interface ICameraStrategy {
 
-    void update(Camera camera);
+    void update(Camera camera, float delta);
 
 }

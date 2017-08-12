@@ -14,9 +14,9 @@ public class CameraStrategyMultiplexer implements ICameraStrategy {
     }
 
     @Override
-    public void update(Camera camera) {
+    public void update(Camera camera, float delta) {
         for (int i = 0; i < strategies.size; i++) {
-            this.strategies.get(i).update(camera);
+            this.strategies.get(i).update(camera, delta);
         }
     }
 

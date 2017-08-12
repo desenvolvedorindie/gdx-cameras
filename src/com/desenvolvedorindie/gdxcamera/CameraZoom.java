@@ -1,67 +1,98 @@
 package com.desenvolvedorindie.gdxcamera;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Interpolation;
 
 public class CameraZoom implements ICameraStrategy {
 
+    private Interpolation interpolation;
     private float[] zoomLevels;
-
     private int zoomLevel = 1;
-
-    private int lastZoomLevel = zoomLevel;
-
-    private boolean zoomFinished = true;
-
-    private float zoomProgress = 0;
-
-    private float zoomSpeed;
-
-    public CameraZoom(float[] zoomLevels, float zoomSpeed) {
-        this.zoomLevels = zoomLevels;
-        this.zoomSpeed = zoomSpeed;
-    }
+    private float duration;
+    private float time;
+    private boolean interporlate;
 
     public CameraZoom(float[] zoomLevels) {
-        this(zoomLevels, 0.1f);
+        this(zoomLevels, 0, null);
+    }
+
+    public CameraZoom(float[] zoomLevels, float duration) {
+        this(zoomLevels, duration, Interpolation.smooth);
+    }
+
+    public CameraZoom(float[] zoomLevels, float duration, Interpolation interpolation) {
+        this.zoomLevels = zoomLevels;
+        this.duration = duration;
+        this.interpolation = interpolation;
     }
 
     public void zoomOut() {
-        lastZoomLevel = zoomLevel;
         zoomLevel = ++zoomLevel % zoomLevels.length;
-        zoomProgress = 0;
-        zoomFinished = false;
-        Gdx.app.log("CameraZoom", String.valueOf(zoomLevels[zoomLevel]));
+        startInterpolate();
     }
 
     public void zoomIn() {
-        lastZoomLevel = zoomLevel;
         --zoomLevel;
         if (zoomLevel < 0) {
             zoomLevel = zoomLevels.length - 1;
         }
-        zoomProgress = 0;
-        zoomFinished = false;
-        Gdx.app.log("CameraZoom", String.valueOf(zoomLevels[zoomLevel]));
+        startInterpolate();
+    }
+
+    private void startInterpolate() {
+        time = 0;
+        interporlate = true;
     }
 
     @Override
-    public void update(Camera camera) {
+    public void update(Camera camera, float delta) {
         if (!(camera instanceof OrthographicCamera))
-            throw new RuntimeException("Camera zoom supports only in CameraUpdater");
+            throw new RuntimeException("CameraZoom only supports OrthographicCamera");
 
-        OrthographicCamera cam = (OrthographicCamera) camera;
+        if (interporlate) {
+            OrthographicCamera cam = (OrthographicCamera) camera;
 
-        if (!zoomFinished) {
-            zoomProgress += zoomSpeed;
-            if (zoomProgress > 1) {
-                zoomProgress = 1;
-                zoomFinished = true;
+            if (interpolation != null) {
+                time += delta;
+
+                float progress = Math.min(1f, time / duration);
+
+                if (progress == 1f) {
+                    interporlate = false;
+                }
+
+                cam.zoom = interpolation.apply(cam.zoom, zoomLevels[zoomLevel], progress);
+
+                cam.update();
+            } else {
+                cam.zoom = zoomLevels[zoomLevel];
+                interporlate = false;
             }
-            cam.zoom = MathUtils.lerp(zoomLevels[lastZoomLevel], zoomLevels[zoomLevel], zoomProgress);
-            cam.update();
         }
+    }
+
+    public Interpolation getInterpolation() {
+        return interpolation;
+    }
+
+    public void setInterpolation(Interpolation interpolation) {
+        this.interpolation = interpolation;
+    }
+
+    public float[] getZoomLevels() {
+        return zoomLevels;
+    }
+
+    public void setZoomLevels(float[] zoomLevels) {
+        this.zoomLevels = zoomLevels;
+    }
+
+    public float getDuration() {
+        return duration;
+    }
+
+    public void setDuration(float duration) {
+        this.duration = duration;
     }
 }
