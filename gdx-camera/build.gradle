@@ -1,0 +1,29 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.7
+
+sourceSets {
+    main {
+        java {
+            srcDirs = [ "src/" ]
+        }
+    }
+
+    test {
+        java {
+            srcDirs = [ "tests/" ]
+        }
+    }
+}
+
+javadoc {
+    title = 'LibGDX Cameras'
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+eclipse.project {
+    name = projectGroup + "-core"
+}

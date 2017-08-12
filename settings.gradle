@@ -1,1 +1,1 @@
-include 'gdx-cameras', 'tests'
+include 'gdx-camera', 'tests'
