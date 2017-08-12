@@ -2,9 +2,10 @@ package com.desenvolvedorindie.gdxcamera;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 
-public class CameraZoom implements ICameraStrategy {
+public class CameraZoom implements CameraConstraint {
 
     private Interpolation interpolation;
     private float[] zoomLevels;
@@ -70,6 +71,11 @@ public class CameraZoom implements ICameraStrategy {
                 interporlate = false;
             }
         }
+    }
+
+    @Override
+    public void debug(Camera camera, ShapeRenderer shapeRenderer, float debug) {
+
     }
 
     public Interpolation getInterpolation() {

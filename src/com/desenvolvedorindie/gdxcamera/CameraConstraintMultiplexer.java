@@ -1,13 +1,14 @@
 package com.desenvolvedorindie.gdxcamera;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 
-public class CameraStrategyMultiplexer implements ICameraStrategy {
+public class CameraConstraintMultiplexer implements CameraConstraint {
 
-    private Array<ICameraStrategy> strategies = new Array(4);
+    private Array<CameraConstraint> strategies = new Array(4);
 
-    public CameraStrategyMultiplexer(ICameraStrategy... strategies) {
+    public CameraConstraintMultiplexer(CameraConstraint... strategies) {
         for (int i = 0; i < strategies.length; i++) {
             this.strategies.add(strategies[i]);
         }
@@ -20,7 +21,14 @@ public class CameraStrategyMultiplexer implements ICameraStrategy {
         }
     }
 
-    public void addProcessor(int index, ICameraStrategy strategy) {
+    @Override
+    public void debug(Camera camera, ShapeRenderer shapeRenderer, float debug) {
+        for (int i = 0; i < strategies.size; i++) {
+            this.strategies.get(i).debug(camera, shapeRenderer, debug);
+        }
+    }
+
+    public void addProcessor(int index, CameraConstraint strategy) {
         if (strategy == null) throw new NullPointerException("strategy cannot be null");
         strategies.insert(index, strategy);
     }
@@ -29,12 +37,12 @@ public class CameraStrategyMultiplexer implements ICameraStrategy {
         strategies.removeIndex(index);
     }
 
-    public void addProcessor(ICameraStrategy strategy) {
+    public void addProcessor(CameraConstraint strategy) {
         if (strategy == null) throw new NullPointerException("strategy cannot be null");
         strategies.add(strategy);
     }
 
-    public void removeProcessor(ICameraStrategy strategy) {
+    public void removeProcessor(CameraConstraint strategy) {
         strategies.removeValue(strategy, true);
     }
 
@@ -46,11 +54,11 @@ public class CameraStrategyMultiplexer implements ICameraStrategy {
         strategies.clear();
     }
 
-    public Array<ICameraStrategy> getStrategies() {
+    public Array<CameraConstraint> getStrategies() {
         return strategies;
     }
 
-    public void setStrategies(Array<ICameraStrategy> strategies) {
+    public void setStrategies(Array<CameraConstraint> strategies) {
         this.strategies = strategies;
     }
 }
