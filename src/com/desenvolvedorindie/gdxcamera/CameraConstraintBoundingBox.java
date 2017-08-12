@@ -7,11 +7,11 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.*;
 
-public class CameraConstraintBoundBox implements CameraConstraint {
+public class CameraConstraintBoundingBox implements CameraConstraint {
 
     BoundingBox boundingBox;
 
-    public CameraConstraintBoundBox(BoundingBox boundingBox) {
+    public CameraConstraintBoundingBox(BoundingBox boundingBox) {
         this.boundingBox = boundingBox;
     }
 
@@ -62,7 +62,7 @@ public class CameraConstraintBoundBox implements CameraConstraint {
 
         shapeRenderer.setColor(Color.BROWN);
 
-        shapeRenderer.rect(boundingBox.min.x, boundingBox.min.y, boundingBox.max.x, boundingBox.max.y);
+        shapeRenderer.rect(boundingBox.min.x, boundingBox.min.y, boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y);
 
         shapeRenderer.end();
     }
