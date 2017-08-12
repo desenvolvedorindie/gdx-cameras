@@ -113,3 +113,5 @@ gradle-app.setting
 .DS_Store
 Thumbs.db
 
+## Modules
+/gdx-cameras/

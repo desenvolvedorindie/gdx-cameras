@@ -1,20 +1,42 @@
-version '1.0'
-
-apply plugin: 'java'
-
-sourceCompatibility = 1.8
-
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.test.java.srcDirs = [ "tests/" ]
-
-repositories {
-    mavenCentral()
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
 }
 
-dependencies {
-    compile "com.badlogicgames.gdx:gdx:1.9.6"
+allprojects {
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    apply plugin: 'java'
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenLocal()
+    }
+}
+
+ext {
+    projectGroup = "gdx-cameras"
+    gdxVersion = '1.9.6'
+}
+
+project(":gdx-cameras") {
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    }
+}
+
+project(":tests") {
+    dependencies {
+        compile project(":gdx-cameras")
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
 }
