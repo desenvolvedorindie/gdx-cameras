@@ -22,9 +22,9 @@ public class CameraConstraintMultiplexer implements CameraConstraint {
     }
 
     @Override
-    public void debug(Camera camera, ShapeRenderer shapeRenderer, float debug) {
+    public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
         for (int i = 0; i < strategies.size; i++) {
-            this.strategies.get(i).debug(camera, shapeRenderer, debug);
+            this.strategies.get(i).debug(camera, shapeRenderer, delta);
         }
     }
 

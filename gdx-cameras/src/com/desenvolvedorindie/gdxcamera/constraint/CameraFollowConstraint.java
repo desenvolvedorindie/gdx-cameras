@@ -11,56 +11,39 @@ import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.*;
 
 public class CameraFollowConstraint implements CameraConstraint {
 
-    private static final Vector3 temp = new Vector3();
-
     private Vector3 position;
 
-    private Vector3 offset;
-
     private float duration;
+
     private float time;
 
     private Interpolation interpolation;
 
-    public CameraFollowConstraint(Vector3 position, Vector3 offset) {
-        this.position = position;
-        this.offset = offset;
-    }
-
     public CameraFollowConstraint(Vector3 position) {
-        this(position, Vector3.Zero);
+        this.position = position;
     }
 
-    public CameraFollowConstraint(Vector3 position, Vector3 offset, float duration, Interpolation interpolation) {
-        this(position, offset);
+    public CameraFollowConstraint(Vector3 position, float duration, Interpolation interpolation) {
+        this(position);
         this.duration = duration;
         this.interpolation = interpolation;
     }
 
-    public CameraFollowConstraint(Vector3 position, float duration, Interpolation interpolation) {
-        this(position, Vector3.Zero, duration, interpolation);
-    }
 
     public CameraFollowConstraint(Vector3 position, float duration) {
-        this(position, Vector3.Zero, duration, Interpolation.smooth);
-    }
-
-    public CameraFollowConstraint(Vector3 position, Vector3 offset, float duration) {
-        this(position, offset, duration, Interpolation.smooth);
+        this(position, duration, Interpolation.smooth);
     }
 
     @Override
     public void update(Camera camera, float delta) {
-        temp.set(position).add(offset);
-
-        if (!temp.equals(camera.position)) {
+        if (!position.equals(camera.position)) {
             if (interpolation != null) {
                 time += delta;
                 float progress = Math.min(1f, time / duration);
 
-                camera.position.interpolate(temp, progress, interpolation);
+                camera.position.interpolate(position, progress, interpolation);
             } else {
-                camera.position.set(temp);
+                camera.position.set(position);
             }
 
             camera.update();
@@ -70,9 +53,7 @@ public class CameraFollowConstraint implements CameraConstraint {
     }
 
     @Override
-    public void debug(Camera camera, ShapeRenderer shapeRenderer, float debug) {
-        temp.set(position).add(offset);
-
+    public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         float radius = 20;
@@ -83,10 +64,34 @@ public class CameraFollowConstraint implements CameraConstraint {
 
         shapeRenderer.begin(ShapeType.Line);
         shapeRenderer.setColor(Color.ORANGE);
-        shapeRenderer.ellipse(temp.x - radius / 2f, temp.y - radius / 2f, radius, radius);
+        shapeRenderer.ellipse(position.x - radius / 2f, position.y - radius / 2f, radius, radius);
 
         shapeRenderer.setColor(Color.CORAL);
         shapeRenderer.ellipse(camera.position.x - radius / 2f, camera.position.y - radius / 2f, radius, radius);
         shapeRenderer.end();
+    }
+
+    public Vector3 getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vector3 position) {
+        this.position = position;
+    }
+
+    public float getDuration() {
+        return duration;
+    }
+
+    public void setDuration(float duration) {
+        this.duration = duration;
+    }
+
+    public Interpolation getInterpolation() {
+        return interpolation;
+    }
+
+    public void setInterpolation(Interpolation interpolation) {
+        this.interpolation = interpolation;
     }
 }

@@ -65,16 +65,17 @@ public class CameraZoom implements CameraConstraint {
 
                 cam.zoom = interpolation.apply(cam.zoom, zoomLevels[zoomLevel], progress);
 
-                cam.update();
             } else {
                 cam.zoom = zoomLevels[zoomLevel];
                 interporlate = false;
             }
+
+            cam.update();
         }
     }
 
     @Override
-    public void debug(Camera camera, ShapeRenderer shapeRenderer, float debug) {
+    public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
 
     }
 
@@ -100,5 +101,9 @@ public class CameraZoom implements CameraConstraint {
 
     public void setDuration(float duration) {
         this.duration = duration;
+    }
+
+    public int getZoomLevel() {
+        return zoomLevel;
     }
 }

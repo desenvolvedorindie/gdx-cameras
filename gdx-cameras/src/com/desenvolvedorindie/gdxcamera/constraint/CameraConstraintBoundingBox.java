@@ -55,7 +55,7 @@ public class CameraConstraintBoundingBox implements CameraConstraint {
     }
 
     @Override
-    public void debug(Camera camera, ShapeRenderer shapeRenderer, float debug) {
+    public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         shapeRenderer.begin(ShapeType.Line);

@@ -15,7 +15,7 @@ public class CameraFocusCostraint implements CameraConstraint {
     }
 
     @Override
-    public void debug(Camera camera, ShapeRenderer shapeRenderer, float debug) {
+    public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
 
     }
 }

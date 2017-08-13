@@ -7,17 +7,70 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.desenvolvedorindie.gdxcamera.constraint.*;
 
 import static com.badlogic.gdx.Input.Keys;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class GDXCamerasTest extends Game {
+
+    public static final String[] INTERPOLATIONS = new String[]{
+            "none",
+            "linear",
+            "smooth",
+            "smooth2",
+            "smoother",
+            "pow2",
+            "pow2In",
+            "pow2Out",
+            "pow2InInverse",
+            "pow2OutInverse",
+            "pow3",
+            "pow3In",
+            "pow3Out",
+            "pow3InInverse",
+            "pow3OutInverse",
+            "pow4",
+            "pow4In",
+            "pow4Out",
+            "pow5",
+            "pow5In",
+            "pow5Out",
+            "sine",
+            "sineIn",
+            "sineOut",
+            "exp10",
+            "exp10In",
+            "exp10Out",
+            "exp5",
+            "exp5In",
+            "exp5Out",
+            "circle",
+            "circleIn",
+            "circleOut",
+            "elastic",
+            "elasticIn",
+            "elasticOut",
+            "swing",
+            "swingIn",
+            "swingOut",
+            "bounce",
+            "bounceIn",
+            "bounceOut",
+    };
 
     public static final int TILE_SIZE = 16;
 
@@ -28,16 +81,20 @@ public class GDXCamerasTest extends Game {
             2,
             3,
     };
+    private static final String ZOOM_LEVEL_TEXT = "Zoom Interpolation (Key: z): %.2f";
+    private static final String ZOOM_INTERPOLATION_TEXT = "Zoom Interpolation (Key: x): %s";
+    private static final String POSITION_INTERPOLATION_TEXT = "Position Interpolation (Key: c): %s";
     private CameraConstraint cameraConstrains;
     private CameraZoom cameraZoom;
     private CameraFollowConstraint cameraFollow;
     private CameraConstraintBoundingBox cameraBoundingBox;
     private float zoomDuration = 2;
-    private Interpolation interpolation = Interpolation.smooth;
+    private float positionDuration = 2;
+    private int zoomInterpolation = 0;
+    private int positionInterpolation = 0;
     private Vector3 playerPosition = new Vector3();
-
     private boolean map[][] = new boolean[80][45];
-
+    private SpriteBatch batch;
     private OrthographicCamera camera;
     private Player player;
     private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
@@ -48,6 +105,10 @@ public class GDXCamerasTest extends Game {
     };
     private Array<Rectangle> tiles = new Array<Rectangle>();
     private ShapeRenderer debugRenderer;
+    private Stage stage;
+    private Label zoomLevelLabel;
+    private Label zoomInterpolationLabel;
+    private Label positionInterpolationLabel;
 
     public static void main(String[] argv) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -64,6 +125,8 @@ public class GDXCamerasTest extends Game {
         Player.WIDTH = 16;
         Player.HEIGHT = 20;
 
+        batch = new SpriteBatch();
+
         // create an orthographic camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -76,6 +139,24 @@ public class GDXCamerasTest extends Game {
             }
         }
 
+        Skin skin = new Skin();
+
+        skin.add("default", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+
+        stage = new Stage(new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), batch);
+
+        zoomLevelLabel = new Label(String.format(ZOOM_LEVEL_TEXT, camera.zoom), skin, "default");
+        zoomLevelLabel.setPosition(20, Gdx.graphics.getHeight() - 30);
+        stage.addActor(zoomLevelLabel);
+
+        zoomInterpolationLabel = new Label(String.format(ZOOM_INTERPOLATION_TEXT, INTERPOLATIONS[zoomInterpolation]), skin, "default");
+        zoomInterpolationLabel.setPosition(20, Gdx.graphics.getHeight() - 60);
+        stage.addActor(zoomInterpolationLabel);
+
+        positionInterpolationLabel = new Label(String.format(POSITION_INTERPOLATION_TEXT, INTERPOLATIONS[positionInterpolation]), skin, "default");
+        positionInterpolationLabel.setPosition(20, Gdx.graphics.getHeight() - 90);
+        stage.addActor(positionInterpolationLabel);
+
         // create the Player we want to move around the world
         player = new Player();
         player.position.set(20, 6 * TILE_SIZE);
@@ -83,10 +164,10 @@ public class GDXCamerasTest extends Game {
         debugRenderer = new ShapeRenderer();
 
         //Camera Constraints
-        cameraZoom = new CameraZoom(ZOOM_LEVELS, zoomDuration, interpolation);
+        cameraZoom = new CameraZoom(ZOOM_LEVELS, zoomDuration, getInterpolation(INTERPOLATIONS[zoomInterpolation]));
         playerPosition.set(player.position.x, player.position.y, 0);
-        cameraFollow = new CameraFollowConstraint(playerPosition);
-        cameraBoundingBox = new CameraConstraintBoundingBox(new BoundingBox());
+        cameraFollow = new CameraFollowConstraint(playerPosition, positionDuration, getInterpolation(INTERPOLATIONS[positionInterpolation]));
+        cameraBoundingBox = new CameraConstraintBoundingBox(new BoundingBox(new Vector3(2 * TILE_SIZE, 2 * TILE_SIZE, 0), new Vector3((getWidth() - 2) * TILE_SIZE, (getHeight() - 2) * TILE_SIZE, 0)));
 
         cameraConstrains = new CameraConstraintMultiplexer(cameraZoom, cameraFollow, cameraBoundingBox);
     }
@@ -104,17 +185,48 @@ public class GDXCamerasTest extends Game {
         updatePlayer(deltaTime);
 
         // let the camera follow the player, x-axis only
-        playerPosition.set(player.position.x, player.position.y, 0);
-        camera.position.x = player.position.x;
-        camera.position.y = player.position.y;
+        playerPosition.set(player.position.x + Player.WIDTH / 2, player.position.y + Player.HEIGHT, 0);
+
+        camera.position.set(playerPosition);
         camera.update();
 
+        //cameraConstrains.update(camera, deltaTime);
 
         // render the player
         renderPlayer();
 
         // render the map
         renderMap();
+
+        cameraConstrains.debug(camera, debugRenderer, deltaTime);
+
+
+        if (Gdx.input.isKeyJustPressed(Keys.X)) {
+            zoomInterpolation = ++zoomInterpolation % INTERPOLATIONS.length;
+            cameraZoom.setInterpolation(getInterpolation(INTERPOLATIONS[zoomInterpolation]));
+            zoomInterpolationLabel.setText(String.format(ZOOM_INTERPOLATION_TEXT, INTERPOLATIONS[zoomInterpolation]));
+        }
+
+        if (Gdx.input.isKeyJustPressed(Keys.C)) {
+            positionInterpolation = ++positionInterpolation % INTERPOLATIONS.length;
+            cameraFollow.setInterpolation(getInterpolation(INTERPOLATIONS[positionInterpolation]));
+            positionInterpolationLabel.setText(String.format(POSITION_INTERPOLATION_TEXT, INTERPOLATIONS[positionInterpolation]));
+        }
+
+        if (Gdx.input.isKeyJustPressed(Keys.Z)) {
+            if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+                cameraZoom.zoomIn();
+            } else {
+                cameraZoom.zoomOut();
+            }
+
+            zoomLevelLabel.setText(String.format(ZOOM_LEVEL_TEXT, ZOOM_LEVELS[cameraZoom.getZoomLevel()]));
+        }
+
+
+        stage.act();
+
+        stage.draw();
     }
 
     private void updatePlayer(float deltaTime) {
@@ -123,6 +235,8 @@ public class GDXCamerasTest extends Game {
             player.velocity.y += Player.JUMP_VELOCITY;
             player.grounded = false;
         }
+
+        player.velocity.x = 0;
 
         if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || isTouched(0, 0.25f)) {
             player.velocity.x = -Player.MAX_VELOCITY;
@@ -204,7 +318,14 @@ public class GDXCamerasTest extends Game {
 
         // Apply damping to the velocity on the x-axis so we don't
         // walk infinitely once a key was pressed
-        player.velocity.x *= Player.DAMPING;
+
+        if (player.position.x < 0) {
+            player.position.x = 0;
+        }
+
+        if (player.position.x > getWidth() * TILE_SIZE - player.WIDTH) {
+            player.position.x = getWidth() * TILE_SIZE - player.WIDTH;
+        }
     }
 
     private boolean isTouched(float startX, float endX) {
@@ -281,12 +402,23 @@ public class GDXCamerasTest extends Game {
         debugRenderer.dispose();
     }
 
+    public Interpolation getInterpolation(String name) {
+        if (name == null)
+            return null;
+        try {
+            Object obj = ClassReflection.getField(Interpolation.class, name).get(null);
+            if (obj instanceof Interpolation)
+                return (Interpolation) obj;
+        } catch (ReflectionException e) {
+        }
+        return null;
+    }
+
     static class Player {
         static float WIDTH;
         static float HEIGHT;
-        static float MAX_VELOCITY = 100f;
-        static float JUMP_VELOCITY = 300f;
-        static float DAMPING = 0.87f;
+        static float MAX_VELOCITY = 400f;
+        static float JUMP_VELOCITY = 500f;
         final Vector2 position = new Vector2();
         final Vector2 velocity = new Vector2();
         boolean grounded = false;

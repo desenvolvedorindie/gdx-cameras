@@ -7,6 +7,6 @@ public interface CameraConstraint {
 
     void update(Camera camera, float delta);
 
-    void debug(Camera camera, ShapeRenderer shapeRenderer, float debug);
+    void debug(Camera camera, ShapeRenderer shapeRenderer, float delta);
 
 }
