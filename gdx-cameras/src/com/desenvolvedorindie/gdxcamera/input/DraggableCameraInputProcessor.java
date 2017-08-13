@@ -2,7 +2,6 @@ package com.desenvolvedorindie.gdxcamera.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 
@@ -16,14 +15,14 @@ public class DraggableCameraInputProcessor extends InputAdapter {
 
     private boolean isBounded;          // camera movement lock
 
-    public DraggableCameraInputProcessor(Camera camera){
+    public DraggableCameraInputProcessor(Camera camera) {
         last_touch_down = new Vector3();
         this.camera = camera;
 
         isBounded = false;
     }
 
-    public DraggableCameraInputProcessor(Camera camera, float max_width, float max_height){
+    public DraggableCameraInputProcessor(Camera camera, float max_width, float max_height) {
         last_touch_down = new Vector3();
 
         this.camera = camera;
@@ -33,31 +32,31 @@ public class DraggableCameraInputProcessor extends InputAdapter {
         isBounded = true;
     }
 
-    public boolean isBounded(){
+    public boolean isBounded() {
         return isBounded;
     }
 
-    public void unbound(){
+    public void unbound() {
         isBounded = false;
     }
 
-    public void setBound(float max_width, float max_height){
+    public void setBound(float max_width, float max_height) {
         this.max_width = max_width;
         this.max_height = max_height;
         isBounded = true;
         cameraUpdate();
     }
 
-    public void setCamera(Camera camera){
+    public void setCamera(Camera camera) {
         this.camera = camera;
     }
 
-    public Camera getCamera(){
+    public Camera getCamera() {
         return camera;
     }
 
-    public void cameraUpdate(){
-        if(isBounded){
+    public void cameraUpdate() {
+        if (isBounded) {
             camera.position.x = Math.min(Math.max(camera.position.x, Gdx.graphics.getWidth() / 2), max_width - Gdx.graphics.getWidth() / 2);
             camera.position.y = Math.min(Math.max(camera.position.y, Gdx.graphics.getHeight() / 2), max_height - Gdx.graphics.getHeight() / 2);
         }

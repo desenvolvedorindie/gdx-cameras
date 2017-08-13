@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
 
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.*;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class CameraFollowConstraint implements CameraConstraint {
+
+    private boolean enabled = true;
 
     private Vector3 position;
 
@@ -36,6 +38,9 @@ public class CameraFollowConstraint implements CameraConstraint {
 
     @Override
     public void update(Camera camera, float delta) {
+        if (!enabled)
+            return;
+
         if (!position.equals(camera.position)) {
             if (interpolation != null) {
                 time += delta;
@@ -54,11 +59,14 @@ public class CameraFollowConstraint implements CameraConstraint {
 
     @Override
     public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
+        if (!enabled)
+            return;
+
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         float radius = 20;
 
-        if(camera instanceof OrthographicCamera) {
+        if (camera instanceof OrthographicCamera) {
             radius *= ((OrthographicCamera) camera).zoom;
         }
 
@@ -69,6 +77,16 @@ public class CameraFollowConstraint implements CameraConstraint {
         shapeRenderer.setColor(Color.CORAL);
         shapeRenderer.ellipse(camera.position.x - radius / 2f, camera.position.y - radius / 2f, radius, radius);
         shapeRenderer.end();
+    }
+
+    @Override
+    public boolean isEnable() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnable(boolean value) {
+        enabled = value;
     }
 
     public Vector3 getPosition() {

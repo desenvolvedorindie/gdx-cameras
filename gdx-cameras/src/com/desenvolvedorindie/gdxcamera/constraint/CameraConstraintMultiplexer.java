@@ -6,6 +6,8 @@ import com.badlogic.gdx.utils.Array;
 
 public class CameraConstraintMultiplexer implements CameraConstraint {
 
+    private boolean enabled = true;
+
     private Array<CameraConstraint> strategies = new Array(4);
 
     public CameraConstraintMultiplexer(CameraConstraint... strategies) {
@@ -16,16 +18,30 @@ public class CameraConstraintMultiplexer implements CameraConstraint {
 
     @Override
     public void update(Camera camera, float delta) {
-        for (int i = 0; i < strategies.size; i++) {
+        if (!enabled)
+            return;
+
+        for (int i = 0; i < strategies.size; i++)
             this.strategies.get(i).update(camera, delta);
-        }
     }
 
     @Override
     public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
-        for (int i = 0; i < strategies.size; i++) {
+        if (!enabled)
+            return;
+
+        for (int i = 0; i < strategies.size; i++)
             this.strategies.get(i).debug(camera, shapeRenderer, delta);
-        }
+    }
+
+    @Override
+    public boolean isEnable() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnable(boolean value) {
+        enabled = value;
     }
 
     public void addProcessor(int index, CameraConstraint strategy) {
@@ -61,4 +77,5 @@ public class CameraConstraintMultiplexer implements CameraConstraint {
     public void setStrategies(Array<CameraConstraint> strategies) {
         this.strategies = strategies;
     }
+
 }

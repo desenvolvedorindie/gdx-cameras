@@ -5,11 +5,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.*;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class CameraConstraintBoundingBox implements CameraConstraint {
 
-    BoundingBox boundingBox;
+    private BoundingBox boundingBox;
+
+    private boolean enabled = true;
 
     public CameraConstraintBoundingBox(BoundingBox boundingBox) {
         this.boundingBox = boundingBox;
@@ -17,6 +19,9 @@ public class CameraConstraintBoundingBox implements CameraConstraint {
 
     @Override
     public void update(Camera camera, float delta) {
+        if (!enabled)
+            return;
+
         boolean changed = false;
 
         if (camera.position.x < boundingBox.min.x) {
@@ -56,6 +61,9 @@ public class CameraConstraintBoundingBox implements CameraConstraint {
 
     @Override
     public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
+        if (!enabled)
+            return;
+
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         shapeRenderer.begin(ShapeType.Line);
@@ -66,4 +74,15 @@ public class CameraConstraintBoundingBox implements CameraConstraint {
 
         shapeRenderer.end();
     }
+
+    @Override
+    public boolean isEnable() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnable(boolean value) {
+        enabled = value;
+    }
+
 }

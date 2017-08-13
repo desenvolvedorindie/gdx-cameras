@@ -9,4 +9,8 @@ public interface CameraConstraint {
 
     void debug(Camera camera, ShapeRenderer shapeRenderer, float delta);
 
+    boolean isEnable();
+
+    void setEnable(boolean value);
+
 }

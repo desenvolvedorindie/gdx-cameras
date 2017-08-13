@@ -7,11 +7,18 @@ import com.badlogic.gdx.math.Interpolation;
 
 public class CameraZoom implements CameraConstraint {
 
+    private boolean enabled = true;
+
     private Interpolation interpolation;
+
     private float[] zoomLevels;
+
     private int zoomLevel = 1;
+
     private float duration;
+
     private float time;
+
     private boolean interporlate;
 
     public CameraZoom(float[] zoomLevels) {
@@ -48,6 +55,9 @@ public class CameraZoom implements CameraConstraint {
 
     @Override
     public void update(Camera camera, float delta) {
+        if (!enabled)
+            return;
+
         if (!(camera instanceof OrthographicCamera))
             throw new RuntimeException("CameraZoom only supports OrthographicCamera");
 
@@ -76,7 +86,18 @@ public class CameraZoom implements CameraConstraint {
 
     @Override
     public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
+        if(!enabled)
+            return;
+    }
 
+    @Override
+    public boolean isEnable() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnable(boolean value) {
+        enabled = value;
     }
 
     public Interpolation getInterpolation() {
@@ -106,4 +127,5 @@ public class CameraZoom implements CameraConstraint {
     public int getZoomLevel() {
         return zoomLevel;
     }
+
 }
