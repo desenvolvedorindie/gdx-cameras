@@ -1,8 +1,8 @@
-# gdx-cameras
+# GDX-Cameras
 
 Preview: https://youtu.be/cBKBV_m1NdQ
 
-# Install
+## Install
 
     allprojects {
 	    repositories {
@@ -15,7 +15,7 @@ Preview: https://youtu.be/cBKBV_m1NdQ
         compile 'com.github.desenvolvedorindie:gdx-cameras:0.0.3'
     }
 
-# Features
+## Features
 
 - Limit Area
 - Follow Player
