@@ -31,7 +31,6 @@ public class CameraFollowConstraint implements CameraConstraint {
         this.interpolation = interpolation;
     }
 
-
     public CameraFollowConstraint(Vector3 position, float duration) {
         this(position, duration, Interpolation.smooth);
     }
@@ -62,21 +61,17 @@ public class CameraFollowConstraint implements CameraConstraint {
         if (!enabled)
             return;
 
-        shapeRenderer.setProjectionMatrix(camera.combined);
-
-        float radius = 20;
+        float r = DEFAULT_RADIUS;
 
         if (camera instanceof OrthographicCamera) {
-            radius *= ((OrthographicCamera) camera).zoom;
+            r *= ((OrthographicCamera) camera).zoom;
         }
 
-        shapeRenderer.begin(ShapeType.Line);
         shapeRenderer.setColor(Color.ORANGE);
-        shapeRenderer.ellipse(position.x - radius / 2f, position.y - radius / 2f, radius, radius);
+        shapeRenderer.ellipse(position.x - r / 2f, position.y - r / 2f, r, r);
 
         shapeRenderer.setColor(Color.CORAL);
-        shapeRenderer.ellipse(camera.position.x - radius / 2f, camera.position.y - radius / 2f, radius, radius);
-        shapeRenderer.end();
+        shapeRenderer.ellipse(camera.position.x - r / 2f, camera.position.y - r / 2f, r, r);
     }
 
     @Override
@@ -112,4 +107,6 @@ public class CameraFollowConstraint implements CameraConstraint {
     public void setInterpolation(Interpolation interpolation) {
         this.interpolation = interpolation;
     }
+
+
 }
