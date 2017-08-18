@@ -27,11 +27,11 @@ import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class GDXCamerasTest extends Game {
 
-    private CameraConstraint cameraConstrains;
     private CameraZoom cameraZoom;
     private CameraFollowConstraint cameraFollow;
     private CameraMidpointConstraint cameraMidpoint;
     private CameraConstraintBoundingBox cameraBoundingBox;
+    private CameraConstraint cameraConstrains;
     private int zoomInterpolation = 0, positionInterpolation = 0;
     private Vector3 playerPosition = new Vector3();
     private boolean map[][] = new boolean[160][45];
@@ -218,14 +218,6 @@ public class GDXCamerasTest extends Game {
         // apply gravity if we are falling
         player.velocity.add(0, Utils.GRAVITY * deltaTime);
 
-        // clamp the velocity to the maximum, x-axis only
-        player.velocity.x = MathUtils.clamp(player.velocity.x, -Entity.MAX_VELOCITY, Entity.MAX_VELOCITY);
-
-        // If the velocity is < 1, set it to 0 and set state to Standing
-        if (Math.abs(player.velocity.x) < 1) {
-            player.velocity.x = 0;
-        }
-
         // multiply by delta time so we know how far we go
         // in this frame
         player.velocity.scl(deltaTime);
@@ -342,6 +334,5 @@ public class GDXCamerasTest extends Game {
     public void dispose() {
         debugRenderer.dispose();
     }
-
 
 }
