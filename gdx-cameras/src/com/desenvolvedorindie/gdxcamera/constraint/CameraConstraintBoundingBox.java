@@ -64,15 +64,9 @@ public class CameraConstraintBoundingBox implements CameraConstraint {
         if (!enabled)
             return;
 
-        shapeRenderer.setProjectionMatrix(camera.combined);
-
-        shapeRenderer.begin(ShapeType.Line);
-
         shapeRenderer.setColor(Color.BROWN);
 
         shapeRenderer.rect(boundingBox.min.x, boundingBox.min.y, boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y);
-
-        shapeRenderer.end();
     }
 
     @Override
