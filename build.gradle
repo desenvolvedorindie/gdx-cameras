@@ -23,7 +23,7 @@ ext {
     gdxVersion = '1.9.6'
 }
 
-project(":gdx-cameras") {
+project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
     }
@@ -31,7 +31,7 @@ project(":gdx-cameras") {
 
 project(":tests") {
     dependencies {
-        compile project(":gdx-cameras")
+        compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }

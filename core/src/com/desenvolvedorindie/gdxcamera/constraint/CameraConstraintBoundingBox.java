@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-
 public class CameraConstraintBoundingBox implements CameraConstraint {
 
     private BoundingBox boundingBox;

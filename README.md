@@ -12,7 +12,7 @@ Preview: https://youtu.be/cBKBV_m1NdQ
     }
   
     dependencies {
-        compile 'com.github.desenvolvedorindie:gdx-cameras:0.0.3'
+        compile 'com.github.desenvolvedorindie.gdx-cameras:gdx-cameras:0.0.4'
     }
 
 ## Features

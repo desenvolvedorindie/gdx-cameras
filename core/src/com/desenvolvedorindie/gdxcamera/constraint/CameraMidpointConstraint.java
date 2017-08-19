@@ -8,22 +8,19 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-
 
 public class CameraMidpointConstraint implements CameraConstraint {
 
-    private boolean enabled = true;
-
-    private boolean autoZoom;
+    private boolean enabled = true, autoZoom;
 
     private float margin;
 
     private Array<Vector3> points;
 
     private Vector3 pos = new Vector3();
-    private Vector2 min = new Vector2();
-    private Vector2 max = new Vector2();;
+
+    private Vector2 min = new Vector2(), max = new Vector2();
+    ;
 
     public CameraMidpointConstraint(boolean autoZoom, float margin) {
         this.autoZoom = autoZoom;

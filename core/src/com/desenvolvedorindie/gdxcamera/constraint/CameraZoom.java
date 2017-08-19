@@ -86,7 +86,7 @@ public class CameraZoom implements CameraConstraint {
 
     @Override
     public void debug(Camera camera, ShapeRenderer shapeRenderer, float delta) {
-        if(!enabled)
+        if (!enabled)
             return;
     }
 
