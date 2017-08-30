@@ -24,3 +24,5 @@ Preview: https://youtu.be/cBKBV_m1NdQ
 - Smooth Position (Interpolation)
 - Smooth Zoom (Interpolation)
 - Debug
+
+Demo: [GDXCamerasTest](https://github.com/desenvolvedorindie/gdx-cameras/blob/master/tests/src/com/desenvolvedorindie/gdxcameras/tests/GDXCamerasTest.java)
