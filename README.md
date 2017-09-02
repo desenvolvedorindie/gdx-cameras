@@ -21,8 +21,8 @@ Preview: https://youtu.be/cBKBV_m1NdQ
 - Follow Player
 - Midpoint
 - Focal Points (WIP)
-- Smooth Position (Interpolation)
-- Smooth Zoom (Interpolation)
+- Smooth Position (LibGDX Interpolation)
+- Smooth Zoom (LibGDX Interpolation)
 - Debug
 
 Demo: [GDXCamerasTest](https://github.com/desenvolvedorindie/gdx-cameras/blob/master/tests/src/com/desenvolvedorindie/gdxcameras/tests/GDXCamerasTest.java)
